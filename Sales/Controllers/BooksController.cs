@@ -4,24 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Sales.DataLayer.Context;
+using Sales.BusinessLayer;
 using Sales.DataLayer.Entities;
 
 namespace Sales.App.Controllers
 {
     public class BooksController : Controller
     {
-        private readonly SalesContext _context;
+        private readonly IBusinessLayer _businessLayer;
 
-        public BooksController(SalesContext context)
+        public BooksController(IBusinessLayer businessLayer)
         {
-            _context = context;
+            _businessLayer = businessLayer;
         }
 
         // GET: Books
         public async Task<IActionResult> Index()
         {
-            var books = await _context.Books.ToListAsync();
+            var books = await _businessLayer.Index();
 
             return View(books);
         }
@@ -34,8 +34,8 @@ namespace Sales.App.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var book = await _businessLayer.Details(id);
+
             if (book == null)
             {
                 return NotFound();
@@ -55,15 +55,15 @@ namespace Sales.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Year,IsbnCode,Picture,Cost,Amount")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Name,Author,Year,IsbnCode,Picture,Cost,Amount")] Book book)
         {
             if (ModelState.IsValid)
             {
-                book.Id = Guid.NewGuid();
-                _context.Add(book);
-                await _context.SaveChangesAsync();
+                await _businessLayer.Create(book);
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(book);
         }
 
@@ -75,11 +75,13 @@ namespace Sales.App.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books.FindAsync(id);
+            var book = await _businessLayer.Edit(id);
+
             if (book == null)
             {
                 return NotFound();
             }
+
             return View(book);
         }
 
@@ -88,7 +90,7 @@ namespace Sales.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Year,Name,Author,IsbnCode,Picture,Cost,Amount")] Book book)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Author,Year,IsbnCode,Picture,Cost,Amount")] Book book)
         {
             if (id != book.Id)
             {
@@ -99,22 +101,27 @@ namespace Sales.App.Controllers
             {
                 try
                 {
-                    _context.Update(book);
-                    await _context.SaveChangesAsync();
+                    await _businessLayer.Edit(id, book);
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.Id))
+                    var bookExists = await _businessLayer.BookExists(id);
+
+                    if (!bookExists)
                     {
                         return NotFound();
                     }
+
                     else
                     {
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(book);
         }
 
@@ -126,8 +133,8 @@ namespace Sales.App.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var book = await _businessLayer.Delete(id);
+
             if (book == null)
             {
                 return NotFound();
@@ -141,15 +148,9 @@ namespace Sales.App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var book = await _context.Books.FindAsync(id);
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            await _businessLayer.DeleteConfirmed(id);
 
-        private bool BookExists(Guid id)
-        {
-            return _context.Books.Any(e => e.Id == id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SalesDataLayer\Sales.DataLayer.csproj" />
+    <ProjectReference Include="..\SalesBusinessLayer\Sales.BusinessLayer.csproj" />
   </ItemGroup>
 
 </Project>

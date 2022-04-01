@@ -9,53 +9,41 @@ namespace Sales.DataLayer.SeedData
 {
     public static class SeedData
     {
-    //    public static void Initialize(IServiceProvider serviceProvider)
-    //    {
-    //        using (var context = new SalesContext(
-    //            serviceProvider.GetRequiredService<
-    //                DbContextOptions<SalesContext>>()))
-    //        {
-    //            // Look for any movies.
-    //            if (context.Books.Any())
-    //            {
-    //                return;   // DB has been seeded
-    //            }
+        public static void Initialize(IServiceProvider serviceProvider)
+        {
+            using var context = new SalesContext(
+                serviceProvider.GetRequiredService<
+                    DbContextOptions<SalesContext>>());
 
-    //            context.Books.AddRange(
-    //                new Book
-    //                {
-    //                    Title = "When Harry Met Sally",
-    //                    ReleaseDate = DateTime.Parse("1989-2-12"),
-    //                    Genre = "Romantic Comedy",
-    //                    Price = 7.99M
-    //                },
+            if (context.Books.Any())
+            {
+                return;
+            }
 
-    //                new Book
-    //                {
-    //                    Title = "Ghostbusters ",
-    //                    ReleaseDate = DateTime.Parse("1984-3-13"),
-    //                    Genre = "Comedy",
-    //                    Price = 8.99M
-    //                },
+            context.Books.AddRange(
+                new Book
+                {
+                    Name = "War and Peace",
+                    Author = "Lev Nikolaevich Tolstoy",
+                    Year = 2007,
+                    IsbnCode = "978-5-699-13659-9",
+                    Picture = "*picture*",
+                    Cost = 500.0,
+                    Amount = 10
+                },
 
-    //                new Book
-    //                {
-    //                    Title = "Ghostbusters 2",
-    //                    ReleaseDate = DateTime.Parse("1986-2-23"),
-    //                    Genre = "Comedy",
-    //                    Price = 9.99M
-    //                },
-
-    //                new Book
-    //                {
-    //                    Title = "Rio Bravo",
-    //                    ReleaseDate = DateTime.Parse("1959-4-15"),
-    //                    Genre = "Western",
-    //                    Price = 3.99M
-    //                }
-    //            );
-    //            context.SaveChanges();
-    //        }
-    //    }
+                new Book
+                {
+                    Name = "Crime and Punishment",
+                    Author = "Fyodor Mikhailovich Dostoevsky",
+                    Year = 2008,
+                    IsbnCode = "978-5-358-05901-6",
+                    Picture = "*picture*",
+                    Cost = 400.0,
+                    Amount = 15
+                }
+            );
+            context.SaveChanges();
+        }
     }
 }

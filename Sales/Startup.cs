@@ -1,15 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Sales.DataLayer.Context;
+using Sales.DataLayer.DataLayerServiceConfiguration;
+using Sales.BusinessLayer.BusinessLayerServiceConfiguration;
 
 namespace Sales.App
 {
@@ -26,8 +22,8 @@ namespace Sales.App
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<SalesContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("SalesContext")));
+            services.AddDataLayer(Configuration.GetConnectionString("SalesContext"));
+            services.AddBusinessLayer();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
