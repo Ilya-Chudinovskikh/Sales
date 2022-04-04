@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using Sales.DataLayer.Context;
+using Sales.DataLayer.Interfaces;
+using Sales.DataLayer.Repositories;
 
 namespace Sales.DataLayer.DataLayerServiceConfiguration
 {
@@ -12,7 +14,11 @@ namespace Sales.DataLayer.DataLayerServiceConfiguration
             services.AddDbContext<SalesContext>(options =>
                     options.UseSqlServer(connectionString));
 
-            services.AddScoped<IDataLayer, DataLayer>();
+            services.AddScoped<IBookRepository, BookRepository>();
+
+            services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();
+
+            services.AddScoped<IOrderRepository, OrderRepository>();
         }
     }
 }

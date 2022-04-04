@@ -1,14 +1,13 @@
-﻿using System;
+﻿using Sales.DataLayer.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Sales.DataLayer.Context;
-using Sales.DataLayer.Entities;
 
-namespace Sales.BusinessLayer
+namespace Sales.DataLayer.Interfaces
 {
-    public interface IBusinessLayer
+    public interface IBookRepository
     {
         Task<List<Book>> Index();
         Task<Book> Details(Guid? id);
@@ -20,3 +19,4 @@ namespace Sales.BusinessLayer
         Task<bool> BookExists(Guid id);
     }
 }
+

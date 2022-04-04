@@ -1,31 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Sales.BusinessLayer;
-using Sales.BusinessLayer.Interfaces;
+using Sales.DataLayer.Context;
 using Sales.DataLayer.Entities;
 
 namespace Sales.App.Controllers
 {
-    public class BooksController : Controller
+    public class PromoCodesController : Controller
     {
-        private readonly IBookService _bookService;
+        private readonly SalesContext _context;
 
-        public BooksController(IBookService businessLayer)
+        public PromoCodesController(SalesContext context)
         {
-            _bookService = businessLayer;
+            _context = context;
         }
 
-        // GET: Books
+        // GET: PromoCodes
         public async Task<IActionResult> Index()
         {
-            var books = await _bookService.Index();
-
-            return View(books);
+            return View(await _context.PromoCodes.ToListAsync());
         }
 
-        // GET: Books/Details/5
+        // GET: PromoCodes/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -33,40 +33,40 @@ namespace Sales.App.Controllers
                 return NotFound();
             }
 
-            var book = await _bookService.Details(id);
-
-            if (book == null)
+            var promoCode = await _context.PromoCodes
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (promoCode == null)
             {
                 return NotFound();
             }
 
-            return View(book);
+            return View(promoCode);
         }
 
-        // GET: Books/Create
+        // GET: PromoCodes/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Books/Create
+        // POST: PromoCodes/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Author,Year,IsbnCode,Picture,Cost,Amount")] Book book)
+        public async Task<IActionResult> Create([Bind("Id,Code,IsValid")] PromoCode promoCode)
         {
             if (ModelState.IsValid)
             {
-                await _bookService.Create(book);
-
+                promoCode.Id = Guid.NewGuid();
+                _context.Add(promoCode);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(book);
+            return View(promoCode);
         }
 
-        // GET: Books/Edit/5
+        // GET: PromoCodes/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -74,24 +74,22 @@ namespace Sales.App.Controllers
                 return NotFound();
             }
 
-            var book = await _bookService.Edit(id);
-
-            if (book == null)
+            var promoCode = await _context.PromoCodes.FindAsync(id);
+            if (promoCode == null)
             {
                 return NotFound();
             }
-
-            return View(book);
+            return View(promoCode);
         }
 
-        // POST: Books/Edit/5
+        // POST: PromoCodes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Author,Year,IsbnCode,Picture,Cost,Amount")] Book book)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,IsValid")] PromoCode promoCode)
         {
-            if (id != book.Id)
+            if (id != promoCode.Id)
             {
                 return NotFound();
             }
@@ -100,31 +98,26 @@ namespace Sales.App.Controllers
             {
                 try
                 {
-                    await _bookService.Edit(id, book);
+                    _context.Update(promoCode);
+                    await _context.SaveChangesAsync();
                 }
-
                 catch (DbUpdateConcurrencyException)
                 {
-                    var bookExists = await _bookService.BookExists(id);
-
-                    if (!bookExists)
+                    if (!PromoCodeExists(promoCode.Id))
                     {
                         return NotFound();
                     }
-
                     else
                     {
                         throw;
                     }
                 }
-
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(book);
+            return View(promoCode);
         }
 
-        // GET: Books/Delete/5
+        // GET: PromoCodes/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -132,24 +125,30 @@ namespace Sales.App.Controllers
                 return NotFound();
             }
 
-            var book = await _bookService.Delete(id);
-
-            if (book == null)
+            var promoCode = await _context.PromoCodes
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (promoCode == null)
             {
                 return NotFound();
             }
 
-            return View(book);
+            return View(promoCode);
         }
 
-        // POST: Books/Delete/5
+        // POST: PromoCodes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            await _bookService.DeleteConfirmed(id);
-
+            var promoCode = await _context.PromoCodes.FindAsync(id);
+            _context.PromoCodes.Remove(promoCode);
+            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        private bool PromoCodeExists(Guid id)
+        {
+            return _context.PromoCodes.Any(e => e.Id == id);
         }
     }
 }

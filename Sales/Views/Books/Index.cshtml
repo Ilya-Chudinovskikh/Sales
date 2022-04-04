@@ -25,22 +25,26 @@
                 @Html.DisplayNameFor(model => model.IsbnCode)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Picture)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Cost)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Amount)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+                <center>
+                <p>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </p>
+                </center>
+                <br />
+                <div class="col-md-6">
+                    <img src="@item.Picture" width="80%">
+                </div>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Author)
@@ -52,19 +56,16 @@
                 @Html.DisplayFor(modelItem => item.IsbnCode)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Picture)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Amount)
             </td>
-            <td>
+            @*<td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+            </td>*@
         </tr>
 }
     </tbody>

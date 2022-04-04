@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Sales.DataLayer.Entities;
 
 namespace Sales.DataLayer.Context
@@ -14,6 +10,9 @@ namespace Sales.DataLayer.Context
         {
         }
         public virtual DbSet<Book> Books { get; set; }
+        public virtual DbSet<PromoCode> PromoCodes { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+
         public SalesContext()
         {
         }

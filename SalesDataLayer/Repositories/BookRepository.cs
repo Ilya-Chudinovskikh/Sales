@@ -5,14 +5,15 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Sales.DataLayer.Context;
 using Sales.DataLayer.Entities;
+using Sales.DataLayer.Interfaces;
 
-namespace Sales.DataLayer
+namespace Sales.DataLayer.Repositories
 {
-    internal class DataLayer : IDataLayer
+    internal class BookRepository : IBookRepository
     {
         private readonly SalesContext _context;
 
-        public DataLayer(SalesContext context)
+        public BookRepository(SalesContext context)
         {
             _context = context;
         }
