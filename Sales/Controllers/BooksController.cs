@@ -105,9 +105,7 @@ namespace Sales.App.Controllers
 
                 catch (DbUpdateConcurrencyException)
                 {
-                    var bookExists = await _bookService.BookExists(id);
-
-                    if (!bookExists)
+                    if (!(await _bookService.BookExists(id)))
                     {
                         return NotFound();
                     }

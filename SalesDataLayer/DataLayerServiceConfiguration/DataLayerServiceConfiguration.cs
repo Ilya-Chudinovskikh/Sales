@@ -14,6 +14,8 @@ namespace Sales.DataLayer.DataLayerServiceConfiguration
             services.AddDbContext<SalesContext>(options =>
                     options.UseSqlServer(connectionString));
 
+            services.AddScoped<ISalesContext, SalesContext>();
+
             services.AddScoped<IBookRepository, BookRepository>();
 
             services.AddScoped<IPromoCodeRepository, PromoCodeRepository>();

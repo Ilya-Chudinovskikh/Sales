@@ -3,152 +3,106 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Sales.DataLayer.Context;
 using Sales.DataLayer.Entities;
+using Sales.BusinessLayer.Interfaces;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Sales.App.Controllers
 {
     public class PromoCodesController : Controller
     {
-        private readonly SalesContext _context;
+        private readonly IPromoCodeService _promoCodeService;
+        private readonly IPromoCodeGenerator _promoCodeGenerator;
 
-        public PromoCodesController(SalesContext context)
+        public PromoCodesController(IPromoCodeService promoCodeService, IPromoCodeGenerator promoCodeGenerator)
         {
-            _context = context;
+            _promoCodeService = promoCodeService;
+            _promoCodeGenerator = promoCodeGenerator;
         }
 
-        // GET: PromoCodes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> GetPromoCode()
         {
-            return View(await _context.PromoCodes.ToListAsync());
+            var code = _promoCodeGenerator.Promocode;
+
+            await ApprovePromoCode(code);
+
+            return View(code);
         }
 
-        // GET: PromoCodes/Details/5
-        public async Task<IActionResult> Details(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var promoCode = await _context.PromoCodes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (promoCode == null)
-            {
-                return NotFound();
-            }
-
-            return View(promoCode);
-        }
-
-        // GET: PromoCodes/Create
-        public IActionResult Create()
+        [HttpGet]
+        public IActionResult Login()
         {
             return View();
         }
 
-        // POST: PromoCodes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        public async Task<IActionResult> Login(string code)
+        {
+            if (!(await _promoCodeService.PromoCodeIsNew(code)))
+            {
+                if (await _promoCodeService.PromoCodeIsValid(code))
+                {
+                    await ApprovePromoCode(code);
+                }
+            }
+
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Authentication()
+        {
+            return View();
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Code,IsValid")] PromoCode promoCode)
+        public async Task<IActionResult> Register([Bind("Id,Code,IsValid")] PromoCode promoCode)
         {
-            if (ModelState.IsValid)
+            if (await _promoCodeService.PromoCodeIsNew(promoCode.Code))
             {
-                promoCode.Id = Guid.NewGuid();
-                _context.Add(promoCode);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                await _promoCodeService.Register(promoCode);
+
+                await Authenticate(promoCode.Code); 
             }
-            return View(promoCode);
+
+            else
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+        private async Task Authenticate(string code)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, code)
+            };
+
+            var id = new ClaimsIdentity(claims, 
+                "ApplicationCookie", 
+                ClaimsIdentity.DefaultNameClaimType, 
+                ClaimsIdentity.DefaultRoleClaimType);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
+                new ClaimsPrincipal(id));
         }
 
-        // GET: PromoCodes/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        private async Task<IActionResult> ApprovePromoCode(string code)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            await Authenticate(code);
 
-            var promoCode = await _context.PromoCodes.FindAsync(id);
-            if (promoCode == null)
-            {
-                return NotFound();
-            }
-            return View(promoCode);
+            return RedirectToAction("Index", "Home");
         }
-
-        // POST: PromoCodes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Code,IsValid")] PromoCode promoCode)
+        public async Task<IActionResult> Logout()
         {
-            if (id != promoCode.Id)
-            {
-                return NotFound();
-            }
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(promoCode);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PromoCodeExists(promoCode.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(promoCode);
-        }
-
-        // GET: PromoCodes/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var promoCode = await _context.PromoCodes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (promoCode == null)
-            {
-                return NotFound();
-            }
-
-            return View(promoCode);
-        }
-
-        // POST: PromoCodes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            var promoCode = await _context.PromoCodes.FindAsync(id);
-            _context.PromoCodes.Remove(promoCode);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool PromoCodeExists(Guid id)
-        {
-            return _context.PromoCodes.Any(e => e.Id == id);
+            return RedirectToAction("Authentication", "PromoCodes");
         }
     }
 }

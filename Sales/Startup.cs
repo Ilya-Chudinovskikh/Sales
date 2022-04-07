@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Sales.DataLayer.DataLayerServiceConfiguration;
 using Sales.BusinessLayer.BusinessLayerServiceConfiguration;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Sales.App.AppServiceConfiguration;
 
 namespace Sales.App
 {
@@ -24,6 +26,9 @@ namespace Sales.App
 
             services.AddDataLayer(Configuration.GetConnectionString("SalesContext"));
             services.AddBusinessLayer();
+            services.AddPromoCodeGenerator();
+
+            services.AddCookieAuthentication();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,6 +47,7 @@ namespace Sales.App
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

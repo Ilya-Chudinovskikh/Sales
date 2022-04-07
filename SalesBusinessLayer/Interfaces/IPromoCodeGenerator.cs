@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Sales.BusinessLayer.Interfaces
 {
-    public interface IOrderService
+    public interface IPromoCodeGenerator
     {
+        string Promocode { get; }
     }
 }

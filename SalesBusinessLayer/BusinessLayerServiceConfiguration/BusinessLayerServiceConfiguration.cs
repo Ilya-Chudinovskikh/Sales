@@ -14,5 +14,9 @@ namespace Sales.BusinessLayer.BusinessLayerServiceConfiguration
 
             services.AddScoped<IOrderService, OrderService>();
         }
+        public static void AddPromoCodeGenerator(this IServiceCollection services)
+        {
+            services.AddSingleton<IPromoCodeGenerator, PromoCodeGenerator>();
+        }
     }
 }

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Sales.DataLayer.Entities;
 using System.Threading.Tasks;
 
 namespace Sales.BusinessLayer.Interfaces
 {
-    interface IPromoCodeService
+    public interface IPromoCodeService
     {
+        Task Register(PromoCode promoCode);
+        Task<bool> PromoCodeIsNew(string code);
+        Task<bool> PromoCodeIsValid(string code);
     }
 }

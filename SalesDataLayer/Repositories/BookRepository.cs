@@ -11,9 +11,9 @@ namespace Sales.DataLayer.Repositories
 {
     internal class BookRepository : IBookRepository
     {
-        private readonly SalesContext _context;
+        private readonly ISalesContext _context;
 
-        public BookRepository(SalesContext context)
+        public BookRepository(ISalesContext context)
         {
             _context = context;
         }
@@ -32,9 +32,9 @@ namespace Sales.DataLayer.Repositories
         }
         public async Task Create(Book book)
         {
-            _context.Add(book);
+            _context.Books.Add(book);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChanges();
         }
         public async Task<Book> Edit(Guid? id)
         {
@@ -44,9 +44,9 @@ namespace Sales.DataLayer.Repositories
         }
         public async Task<Book> Edit(Guid id, Book book)
         {
-            _context.Update(book);
+            _context.Books.Update(book);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChanges();
 
             return book;
         }
@@ -63,13 +63,13 @@ namespace Sales.DataLayer.Repositories
 
             _context.Books.Remove(book);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChanges();
         }
         public async Task<bool> BookExists(Guid id)
         {
-            var bookExist = await _context.Books.AnyAsync(e => e.Id == id);
+            var bookExists = await _context.Books.AnyAsync(e => e.Id == id);
 
-            return bookExist;
+            return bookExists;
         }
     }
 }

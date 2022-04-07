@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Sales.DataLayer.Entities;
+using Sales.DataLayer.Interfaces;
+using System.Threading.Tasks;
 
 namespace Sales.DataLayer.Context
 {
-    public class SalesContext : DbContext
+    public class SalesContext : DbContext, ISalesContext
     {
         public SalesContext (DbContextOptions<SalesContext> options)
             : base(options)
@@ -15,6 +17,10 @@ namespace Sales.DataLayer.Context
 
         public SalesContext()
         {
+        }
+        public async Task SaveChanges()
+        {
+            await base.SaveChangesAsync();
         }
     }
 }

@@ -43,6 +43,7 @@ namespace Sales.DataLayer.SeedData
                     Amount = 15
                 }
             );
+
             context.SaveChanges();
         }
     }
