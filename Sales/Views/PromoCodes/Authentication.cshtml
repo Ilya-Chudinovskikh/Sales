@@ -1,16 +1,16 @@
 ﻿@model Sales.DataLayer.Entities.PromoCode
 
 @{
-    ViewData["Title"] = "Register Promo Code";
+    ViewData["Title"] = "Register Promo сode";
 }
 
-<h1>Register</h1>
+<h1>Do you have a Promo сode?</h1>
 
-<h4>Promo Code</h4>
+<h3>Not yet!</h3>
 
-<a asp-controller="PromoCodes" asp-action="GetPromoCode">Get Promo Code</a>
+<a asp-controller="PromoCodes" asp-action="GetPromoCode">Get new Promo сode</a>
 
-<h2>Login</h2>
+<h3>Yes, I already have one!</h3>
 
 <form asp-action="Login" asp-controller="PromoCodes" asp-anti-forgery="true">
     <div class="validation" asp-validation-summary="ModelOnly"></div>

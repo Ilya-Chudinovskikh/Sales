@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Sales.DataLayer.Entities;
 using System.Threading.Tasks;
 
 namespace Sales.DataLayer.Interfaces
 {
-    interface IOrderRepository
+    public interface IOrderRepository
     {
+        Task CreateOrder(Order newOrder);
+        Task UpdateOrder(Order updatedOrder);
     }
 }

@@ -9,8 +9,12 @@ namespace Sales.DataLayer.Entities
         public Guid Id { get; set; }
         [Required]
         public PromoCode PromoCode { get; set; }
+        [Required]
         public List<Book> OrderedBooks { get; set; }
         [Required]
         public double TotalSum { get; set; }
+        [Required]
+        public bool IsConfirmed { get; set; }
+
     }
 }
