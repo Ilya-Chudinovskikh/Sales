@@ -44,9 +44,9 @@ namespace Sales.BusinessLayer.Services
             return book;
         }
 
-        public Task<Book> Edit(Guid id, Book book)
+        public Task<Book> Edit(Book book)
         {
-            var editedBook = _bookRepository.Edit(id, book);
+            var editedBook = _bookRepository.UpdateBook(book);
 
             return editedBook;
         }
@@ -56,6 +56,22 @@ namespace Sales.BusinessLayer.Services
             var book = _bookRepository.Delete(id);
 
             return book;
+        }
+        public Task<Book> ReserveBook(Book book)
+        {
+            book.Amount -= 1;
+
+            var updatedBook = UpdateBook(book);
+
+            return updatedBook;
+        }
+        public Task<Book> ReturnBook(Book book)
+        {
+            book.Amount += 1;
+
+            var updatedBook = UpdateBook(book);
+
+            return updatedBook;
         }
 
         public Task DeleteConfirmed(Guid id)
@@ -69,6 +85,12 @@ namespace Sales.BusinessLayer.Services
             var bookExist = _bookRepository.BookExists(id);
 
             return bookExist;
+        }
+        public Task<Book> UpdateBook(Book book)
+        {
+            var updatedBook = _bookRepository.UpdateBook(book);
+
+            return updatedBook;
         }
     }
 }

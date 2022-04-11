@@ -8,5 +8,6 @@ namespace Sales.BusinessLayer.Interfaces
         Task Register(PromoCode promoCode);
         Task<bool> PromoCodeIsNew(string code);
         Task<bool> PromoCodeIsValid(string code);
+        Task UsePromoCode(PromoCode promoCode);
     }
 }

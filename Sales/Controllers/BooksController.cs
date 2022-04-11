@@ -17,7 +17,6 @@ namespace Sales.App.Controllers
             _bookService = businessLayer;
         }
 
-        // GET: Books
         public async Task<IActionResult> Index()
         {
             var books = await _bookService.Index();
@@ -25,7 +24,6 @@ namespace Sales.App.Controllers
             return View(books);
         }
 
-        // GET: Books/Details/5
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -43,15 +41,11 @@ namespace Sales.App.Controllers
             return View(book);
         }
 
-        // GET: Books/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Books/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Author,Year,IsbnCode,Picture,Cost,Amount")] Book book)
@@ -66,7 +60,6 @@ namespace Sales.App.Controllers
             return View(book);
         }
 
-        // GET: Books/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -84,9 +77,6 @@ namespace Sales.App.Controllers
             return View(book);
         }
 
-        // POST: Books/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Author,Year,IsbnCode,Picture,Cost,Amount")] Book book)
@@ -100,7 +90,7 @@ namespace Sales.App.Controllers
             {
                 try
                 {
-                    await _bookService.Edit(id, book);
+                    await _bookService.UpdateBook(book);
                 }
 
                 catch (DbUpdateConcurrencyException)
@@ -121,8 +111,6 @@ namespace Sales.App.Controllers
 
             return View(book);
         }
-
-        // GET: Books/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -140,7 +128,6 @@ namespace Sales.App.Controllers
             return View(book);
         }
 
-        // POST: Books/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)

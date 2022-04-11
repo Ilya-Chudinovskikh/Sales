@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Sales.DataLayer.Entities;
 using Sales.BusinessLayer.Interfaces;
 using System.Security.Claims;
@@ -22,14 +19,13 @@ namespace Sales.App.Controllers
             _promoCodeService = promoCodeService;
             _promoCodeGenerator = promoCodeGenerator;
         }
-
         public async Task<IActionResult> GetPromoCode()
         {
             var code = _promoCodeGenerator.Promocode;
 
             await ApprovePromoCode(code);
 
-            return View(code);
+            return View("Books/Index");
         }
 
         [HttpGet]

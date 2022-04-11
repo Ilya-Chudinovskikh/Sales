@@ -37,5 +37,11 @@ namespace Sales.BusinessLayer.Services
 
             return isValid;
         }
+        public Task UsePromoCode(PromoCode promoCode)
+        {
+            promoCode.IsValid = false;
+
+            return _promoCodeRepository.UpdatePromoCode(promoCode);
+        }
     }
 }

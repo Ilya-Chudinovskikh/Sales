@@ -6,7 +6,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Sales.DataLayer.DataLayerServiceConfiguration;
 using Sales.BusinessLayer.BusinessLayerServiceConfiguration;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Sales.App.AppServiceConfiguration;
 
 namespace Sales.App

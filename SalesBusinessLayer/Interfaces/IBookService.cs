@@ -11,7 +11,9 @@ namespace Sales.BusinessLayer.Interfaces
         Task<Book> Details(Guid? id);
         Task Create(Book book);
         Task<Book> Edit(Guid? id);
-        Task<Book> Edit(Guid id, Book book);
+        Task<Book> UpdateBook(Book book);
+        Task<Book> ReturnBook(Book book);
+        Task<Book> ReserveBook(Book book);
         Task<Book> Delete(Guid? id);
         Task DeleteConfirmed(Guid id);
         Task<bool> BookExists(Guid id);

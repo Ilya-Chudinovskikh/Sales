@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Sales.DataLayer.Context;
 using Sales.DataLayer.Entities;
 using Sales.DataLayer.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Sales.DataLayer.Repositories
@@ -37,6 +32,12 @@ namespace Sales.DataLayer.Repositories
             var isValid = promoCode.IsValid;
 
             return isValid;
+        }
+        public async Task UpdatePromoCode(PromoCode updatedPromoCode)
+        {
+            _context.PromoCodes.Update(updatedPromoCode);
+
+            await _context.SaveChanges();
         }
     }
 }

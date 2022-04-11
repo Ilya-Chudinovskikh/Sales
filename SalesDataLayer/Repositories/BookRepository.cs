@@ -40,7 +40,7 @@ namespace Sales.DataLayer.Repositories
 
             return book;
         }
-        public async Task<Book> Edit(Guid id, Book book)
+        public async Task<Book> UpdateBook(Book book)
         {
             _context.Books.Update(book);
 

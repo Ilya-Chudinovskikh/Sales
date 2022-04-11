@@ -12,5 +12,6 @@ namespace Sales.DataLayer.Interfaces
         Task Register(PromoCode promoCode);
         Task<bool> PromoCodeIsNew(string code);
         Task<bool> PromoCodeIsValid(string code);
+        Task UpdatePromoCode(PromoCode updatedPromoCode);
     }
 }
